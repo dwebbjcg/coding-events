@@ -21,6 +21,8 @@ public class EventController {
     @Autowired
     private EventRepository eventRepository;
 
+//    findAll, findById, save
+
     @GetMapping
     public String displayAllEvents(Model model) {
         model.addAttribute("title", "All Events");
