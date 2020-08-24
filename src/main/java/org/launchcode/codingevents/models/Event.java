@@ -1,10 +1,11 @@
 package org.launchcode.codingevents.models;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -13,10 +14,6 @@ import javax.validation.constraints.Size;
 @Entity
 
 public class Event extends AbstractEntity {
-
-    @Id
-    @GeneratedValue
-    private int id;
 
     @NotBlank(message = "Name is required")
     @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
@@ -29,13 +26,17 @@ public class Event extends AbstractEntity {
     @Email(message = "Invalid email. Try again.")
     private String contactEmail;
 
-    private EventType type;
+    @ManyToOne
+    @NotNull(message= "Category is required.")
+    private EventCategory eventcategory;
+
+
 
     public Event(String name, String description, String contactEmail, EventType type) {
         this.name = name;
         this.description = description;
         this.contactEmail = contactEmail;
-        this.type = type;
+        this.eventcategory = eventcategory;
     }
 
     public Event() {}
@@ -64,12 +65,12 @@ public class Event extends AbstractEntity {
         this.contactEmail = contactEmail;
     }
 
-    public EventType getType() {
-        return type;
+    public EventCategory getEventcategory() {
+        return eventcategory;
     }
 
-    public void setType(EventType type) {
-        this.type = type;
+    public void setEventcategory(EventCategory eventcategory) {
+        this.eventcategory = eventcategory;
     }
 
     @Override
