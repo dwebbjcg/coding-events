@@ -3,12 +3,14 @@ package org.launchcode.codingevents.controllers;
 import org.launchcode.codingevents.data.EventCategoryRepository;
 import org.launchcode.codingevents.data.EventRepository;
 import org.launchcode.codingevents.models.Event;
+import org.launchcode.codingevents.models.EventCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.util.Optional;
 
 /**
  * Created by Chris Bay
@@ -26,9 +28,21 @@ public class EventController {
 //    findAll, findById, save
 
     @GetMapping
-    public String displayAllEvents(Model model) {
+    public String displayAllEvents(@RequestParam(required=false) Integer categoryId, Model model) {
+
+        if (categoryId==null) {
         model.addAttribute("title", "All Events");
         model.addAttribute("events", eventRepository.findAll());
+        } else {
+            Optional<EventCategory> result = eventCategoryRepository.findById(categoryId);
+                if (result.isEmpty()) {
+                   model.addAttribute("title", "Invalid category: " + categoryId);
+                } else {
+                    EventCategory category = result.get();
+                    model.addAttribute("title", "Events in Category: " + category.getName());
+                    model.addAttribute("events", category.getEvents());
+                }
+        }
         return "events/index";
     }
 
@@ -47,7 +61,6 @@ public class EventController {
             model.addAttribute("title", "Create Event");
             return "events/create";
         }
-
         eventRepository.save(newEvent);
         return "redirect:";
     }
